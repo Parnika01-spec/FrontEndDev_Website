@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travelers Tales - The Ladakh Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark: #0f0f0f;
+            --text-gray: #a0a0a0;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { padding: 0; margin: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            background-color: var(--dark); 
+            color: #fff; 
+            font-family: 'Montserrat', sans-serif; 
+            overflow-x: hidden; 
+        }
+
+        /* Typography */
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+        /* Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* NAVIGATION */
+        .main-nav {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; z-index: 100;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+            transition: 0.3s;
+        }
+        .nav-logo { font-weight: 800; color: white; text-decoration: none; letter-spacing: 2px; font-size: 1.1rem; }
+        .nav-links { display: flex; gap: 40px; list-style: none; }
+        .nav-links a { color: white; text-decoration: none; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; transition: 0.3s; opacity: 0.7; }
+        .nav-links a:hover { opacity: 1; color: var(--gold); }
+        .book-btn {
+            padding: 10px 25px; border: 1px solid var(--gold); color: var(--gold); text-decoration: none;
+            border-radius: 30px; font-size: 0.8rem; letter-spacing: 1px; transition: 0.3s;
+        }
+        .book-btn:hover { background: var(--gold); color: #000; }
+
+        /* HERO SECTION */
+        .hero-section {
+            height: 100vh; width: 100%; position: relative; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            /* Updated Hero Image */
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?fit=crop&w=1920&q=80");
+            background-size: cover; background-attachment: fixed; background-position: center;
+        }
+        .hero-subtitle { font-size: 1rem; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 20px; animation: fadeIn 1s ease 0.5s forwards; opacity: 0;}
+        .hero-title { 
+            font-size: 8rem; line-height: 0.9; margin-bottom: 30px; 
+            background: -webkit-linear-gradient(#fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: slideUp 1s ease forwards;
+        }
+        .hero-title span { display: block; font-size: 2rem; font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 10px; -webkit-text-fill-color: white; margin-top: 10px;}
+
+        /* Floating Info Strip */
+        .hero-stats {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            display: flex; justify-content: center; gap: 1px;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(15px); border-top: 1px solid var(--border);
+        }
+        .stat-box {
+            padding: 30px 50px; text-align: center; border-right: 1px solid var(--border); color: #ddd;
+            transition: 0.3s;
+        }
+        .stat-box:hover { background: rgba(255,255,255,0.05); }
+        .stat-box h3 { font-size: 1.5rem; color: var(--gold); margin-bottom: 5px; }
+        .stat-box p { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* DESTINATIONS (Refactored "6 photo section") */
+        .destinations-section {
+            padding: 100px 50px;
+            background: linear-gradient(to bottom, #0f0f0f, #151515);
+        }
+        .section-header { margin-bottom: 60px; max-width: 600px; }
+        .section-header h2 { font-size: 3rem; margin-bottom: 20px; }
+        .section-header p { color: var(--text-gray); line-height: 1.6; }
+
+        /* Accordion Gallery */
+        .gallery-container {
+            display: flex; height: 500px; width: 100%; gap: 10px;
+        }
+        .gallery-item {
+            position: relative; flex: 1; border-radius: 20px; overflow: hidden; cursor: pointer;
+            transition: flex 0.5s ease;
+        }
+        .gallery-item img {
+            width: 100%; height: 100%; object-fit: cover; transition: 0.5s;
+            filter: brightness(0.6);
+        }
+        .gallery-item:hover { flex: 3; }
+        .gallery-item:hover img { transform: scale(1.1); filter: brightness(0.9); }
+        
+        .gallery-info {
+            position: absolute; bottom: 30px; left: 30px; opacity: 0; transition: 0.4s; z-index: 2;
+            pointer-events: none;
+        }
+        .gallery-item:hover .gallery-info { opacity: 1; bottom: 40px; }
+        
+        .gallery-info h3 { font-size: 2.5rem; color: #fff; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .gallery-info p { font-size: 0.9rem; color: #eee; max-width: 300px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+        
+        .gallery-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 60%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            pointer-events: none;
+        }
+
+        /* INCLUDED SECTION */
+        .included-section {
+            padding: 120px 50px;
+            background: #111;
+            background-image: radial-gradient(circle at 100% 0%, #222 0%, #111 50%);
+        }
+        .grid-layout {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;
+            margin-top: 50px;
+        }
+        .feature-card {
+            background: var(--glass); border: 1px solid var(--border);
+            padding: 40px 30px; border-radius: 16px; transition: 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px); border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .feature-icon { font-size: 2rem; color: var(--gold); margin-bottom: 20px; display: block; }
+        .feature-card h3 { font-size: 1.2rem; margin-bottom: 10px; font-family: 'Montserrat', sans-serif; font-weight: 600; }
+        .feature-card p { color: var(--text-gray); font-size: 0.9rem; line-height: 1.6; }
+
+        /* CONTACT SECTION */
+        .contact-section {
+            height: 95vh; position: relative;
+            /* Updated Contact Background Image */
+            background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&fit=crop') no-repeat center center/cover;
+            display: flex; align-items: center; justify-content: flex-end; padding: 0 10%;
+        }
+        .contact-overlay {
+            /* Darker overlay to ensure form is readable */
+            position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.95) 70%);
+        }
+        .form-wrapper {
+            position: relative; width: 100%; max-width: 450px; z-index: 2;
+        }
+        .form-wrapper h2 { font-size: 3rem; margin-bottom: 10px; }
+        .form-wrapper p { color: var(--text-gray); margin-bottom: 30px; }
+        
+        .minimal-input {
+            width: 100%; background: transparent; border: none; border-bottom: 1px solid #555;
+            padding: 15px 0; color: white; font-family: 'Montserrat'; font-size: 1rem; margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .minimal-input:focus { outline: none; border-color: var(--gold); }
+        .minimal-input::placeholder { color: #555; }
+        
+        .submit-btn {
+            background: #fff; color: #000; padding: 15px 40px; border: none; border-radius: 30px;
+            font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .submit-btn:hover { background: var(--gold); transform: scale(1.05); }
+
+        /* FOOTER */
+        footer {
+            padding: 50px; text-align: center; border-top: 1px solid #222; background: #0a0a0a;
+        }
+        .footer-logo { font-family: 'Playfair Display'; font-size: 1.5rem; color: var(--gold); display: block; margin-bottom: 20px; }
+        .copyright { color: #555; font-size: 0.8rem; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 4rem; }
+            .hero-stats { flex-wrap: wrap; }
+            .stat-box { width: 50%; border-bottom: 1px solid var(--border); }
+            .gallery-container { flex-direction: column; height: auto; }
+            .gallery-item { height: 250px; }
+            .contact-section { justify-content: center; padding: 20px; background-position: left center; }
+            .contact-overlay { background: rgba(0,0,0,0.8); }
+            .nav-links { display: none; }
+        }
+
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <nav class="main-nav">
+        <a href="#" class="nav-logo">TRAVELERS TALES</a>
+        <ul class="nav-links">
+            <li><a href="#journey">The Journey</a></li>
+            <li><a href="#included">Inclusions</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a href="#contact" class="book-btn">BOOK NOW</a>
+    </nav>
+
+    <section class="hero-section">
+        <p class="hero-subtitle">The Land of High Passes</p>
+        <h1 class="hero-title">Ladakh<br><span>EXPEDITION</span></h1>
+        
+        <div class="hero-stats">
+            <div class="stat-box">
+                <h3>10</h3>
+                <p>Days</p>
+            </div>
+            <div class="stat-box">
+                <h3>3</h3>
+                <p>Valleys</p>
+            </div>
+            <div class="stat-box">
+                <h3>18k</h3>
+                <p>Ft Elevation</p>
+            </div>
+            <div class="stat-box">
+                <h3>∞</h3>
+                <p>Memories</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="destinations-section" id="journey">
+        <div class="section-header reveal">
+            <h2>The Route</h2>
+            <p>Three iconic stops. Ten days of pure immersion. From the ancient monasteries to high-altitude deserts and changing blue waters.</p>
+        </div>
+
+        <div class="gallery-container reveal">
+            <div class="gallery-item">
+                <div class="gallery-overlay"></div>
+                <img src="./images/leh monastry.jpg" alt="Leh Monastery">
+                <div class="gallery-info">
+                    <h3>Leh</h3>
+                    <p>Days 1-3 • Acclimatize amidst ancient stupas and the royal palaces.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-overlay"></div>
+                <img src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&fit=crop" alt="Nubra">
+                <div class="gallery-info">
+                    <h3>Nubra Valley</h3>
+                    <p>Days 4-6 • Ride through sand dunes on double-humped camels.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-overlay"></div>
+                <img src="./images/pangong lake.jpg" alt="Pangong Tso">
+                <div class="gallery-info">
+                    <h3>Pangong Tso</h3>
+                    <p>Days 7-10 • Witness the color-changing lake under starry skies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="included-section" id="included">
+        <div class="section-header reveal" style="text-align: center; margin: 0 auto 50px auto;">
+            <h2>Curated Comfort</h2>
+            <p>Rough terrain, smooth experience.</p>
+        </div>
+        <div class="grid-layout reveal">
+            <div class="feature-card">
+                <span class="feature-icon">🚙</span>
+                <h3>4x4 Transport</h3>
+                <p>Private SUVs or Royal Enfield Himalayans for the ultimate road trip experience.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⛺</span>
+                <h3>Glamping</h3>
+                <p>Luxury Swiss tents with attached baths in the middle of nowhere.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🍱</span>
+                <h3>All Meals</h3>
+                <p>Hearty breakfasts and warm dinners curated for high-altitude digestion.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🛡</span>
+                <h3>Safety First</h3>
+                <p>Portable oxygen, first aid, and experienced mountain guides at every step.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+        <div class="contact-overlay"></div>
+        <div class="form-wrapper reveal">
+            <h2>Book Your Spot</h2>
+            <p>Limited batches for the upcoming season. Reserve now.</p>
+            <form>
+                <input type="text" class="minimal-input" placeholder="Your Name" required>
+                <input type="email" class="minimal-input" placeholder="Email Address" required>
+                <input type="text" class="minimal-input" placeholder="Any specific requirements?" required>
+                <button type="submit" class="submit-btn">SEND REQUEST</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <span class="footer-logo">TRAVELERS TALES</span>
+        <p class="copyright">&copy; 2025 Travelers Tales Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', reveal);
+
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+
+            for(var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+
+                if(elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+        // Trigger once on load
+        reveal();
+    </script>
+</body>
+</html>
